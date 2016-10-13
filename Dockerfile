@@ -7,20 +7,18 @@ RUN apk add --no-cache \
       gcc \
       alpine-sdk \
       ruby-dev && \
-    mkdir /tmp/dtemplate
+    mkdir /tmp/eshealth
 
 COPY . /tmp/eshealth/
 
 SHELL ["/bin/bash", "-c"]
 RUN \
-    cd /tmp/dtemplate/ && \
+    cd /tmp/eshealth/ && \
     bundle install && \
     rake spec && \
     rake install && \
     rake clobber
 
-WORKDIR /data
-
 ENTRYPOINT ["eshealth"]
 
-CMD ["--path=/data","--version=1.0"]
+CMD ["--help"]

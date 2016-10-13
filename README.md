@@ -21,6 +21,8 @@ Or install it yourself as:
 ## Usage
 
 ### bin/eshealth
+
+```
 Usage: eshealth [OPTIONS]
     -u, --url=http://your_url:9200   URL to ES server
     -p, --period=N                   Number of minutes between checks
@@ -28,8 +30,19 @@ Usage: eshealth [OPTIONS]
     -c, --condition=STRING           String matching a successful healthcheck
     -q, --quell=N                    Amount of time to quell between alerts
     -k, --key=SERVICEKEY             PagerDuty service key
+```
 
+#### Docker
 
+https://hub.docker.com/r/searchspring/eshealth/
+
+```
+docker pull searchspring/eshealth
+```
+
+```
+docker run --rm searchspring/eshealth -u http://ES_SERVER_HOSTNAME:9200/ -p 1 -c green -q 1 -f 1 -k PAGERDUTY_SERVICE_KEY
+```
 
 ## Development
 
