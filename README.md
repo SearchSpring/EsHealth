@@ -32,7 +32,7 @@ Usage: eshealth [OPTIONS]
     -k, --key=SERVICEKEY             PagerDuty service key
 ```
 
-#### Docker
+### Docker
 
 https://hub.docker.com/r/searchspring/eshealth/
 
