@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'ostruct'
+require 'eshealth'
+require 'pp'
+
+options = OpenStruct.new()
+options[:url] = "http://localhost:9200"
+options[:period] = 5
+options[:failures] = 2
+options[:condition] = "green"
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: eshealth [OPTIONS]"
+  opts.on("-u http://your_url:9200", "--url=http://your_url:9200", "URL to ES server") do |url|
+    options[:url] = url
+  end
+  opts.on("-p N", "--period=N", "Number of minutes between checks") do |period|
+    options[:period] = period.to_i
+  end
+  opts.on("-f N", "--failures=N", "Number of consecutive failures to trigger an alert") do |failures|
+    options[:failures] = failures.to_i
+  end
+  opts.on("-c STRING", "--condition=STRING", "String matching a successful healthcheck") do |condition|
+    options[:condition] = condition
+  end
+  opts.on("-q N", "--quell=N", "Amount of time to quell between alerts") do |quell|
+    options[:quell] = quell.to_i
+  end
+  opts.on("-k SERVICEKEY", "--key=SERVICEKEY", "PagerDuty service key") do |servicekey|
+    options[:servicekey] = servicekey
+  end
+end.parse!
+
+
+checkloop = Eshealth::CheckLoop.new(
+  :period         => options[:period],
+  :failures       => options[:failures],
+  :condition      => options[:condition],
+  :quell          => options[:quell],
+  :checkfactory   => Eshealth::ClusterHealth.new(:url => options[:url]),
+  :alertfactory   => Eshealth::PagerDutyAlert.new(:servicekey => options[:servicekey])
+)
+
+checkloop.start
