@@ -5,13 +5,13 @@ module Eshealth
 
   class ClusterHealth < Checkfactory
 
-    attr_accessor :url, :requestfactory, :healthbody, :type, :lastmsg
+    attr_accessor :url, :healthbody, :type, :lastmsg 
     attr_reader :requestfactory
     
     def initialize(options={})
       self.type = "ClusterHealth"
       self.url = options[:url] || "http://localhost:9200/"
-      self.requestfactory = options[:requestfactory] || Eshealth::Requestfactory.build("HttpRequest", options)
+      self.requestfactory = options[:requestfactory] || Eshealth::Requestfactory.build("HttpRequest",options)
     end
 
     def requestfactory=(requestfactory)
@@ -22,18 +22,19 @@ module Eshealth
     end
     
     def healthstatus
+      puts "running request\n"
       if response = self.requestfactory.fetch("_cluster/health")
         begin
           health = JSON.parse(response)
         rescue => e
-          puts "Unable to parse response from ES: #{e}"
-          "Fail"
+          $stderr.puts "Unable to parse response from ES: #{e}"
+          return "Failed to parse response"
         end
         
         self.lastmsg = "#{YAML.dump(health)}"
         health["status"]
       else
-        "Fail"
+        "Failed to retrieve any data"
       end
     end
 

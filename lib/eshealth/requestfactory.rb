@@ -18,13 +18,16 @@ module Eshealth
 
   class FakeRequest < Requestfactory
 
-    attr_accessor :url
+    attr_accessor :url, :response
     
     def initialize(options={})
+      self.url = options[:url]
+      self.response = options[:response]
     end
     def fetch(path,params={})
-      params[:response]
+      self.response
     end
+    
   end
 
 end
