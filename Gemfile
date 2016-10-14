@@ -5,4 +5,7 @@ gemspec
 gem "revolver"
 gem "pagerduty"
 
+group :test do
+  gem 'webmock'
+end
 

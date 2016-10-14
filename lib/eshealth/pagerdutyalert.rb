@@ -16,7 +16,7 @@ module Eshealth
       begin
         incident = pagerduty.trigger(options[:msg])
       rescue => e
-        puts "Unable to contact PagerDuty: #{e}"
+        $stderr.puts "Unable to contact PagerDuty: #{e}"
       end
     
     end
@@ -27,13 +27,13 @@ module Eshealth
         begin
           incident = pagerduty.get_incident(incidentid)
         rescue => e
-          puts "Unable to retrieve incidentid #{incidentid}: #{e}"
+          $stderr.puts "Unable to retrieve incidentid #{incidentid}: #{e}"
         end
         
         begin
           incident.resolve   
         rescue => e
-          puts "Unable to resolve incident #{incidentid} : #{e}"
+          $stderr.puts "Unable to resolve incident #{incidentid} : #{e}"
         end
       end
     
