@@ -1,9 +1,9 @@
 require "spec_helper"
 require "json"
 
-describe Eshealth::ClusterHealth do
+describe Eshealth::ClusterConfig do
   describe "Attributes" do
-    clusterhealth = Eshealth::ClusterHealth.new
+    clusterhealth = Eshealth::ClusterConfig.new
     describe ".url" do
       it "Allows reading and writing for :url" do
         clusterhealth.url = "something_stupid"
@@ -37,16 +37,9 @@ describe Eshealth::ClusterHealth do
       context "The requestfactory returns a good response" do
         response = {"status" => "green"}
         requestfactory = Eshealth::FakeRequest.new(:response => response.to_json)
-        clusterhealth = Eshealth::ClusterHealth.new(:requestfactory => requestfactory )
+        clusterconfig = Eshealth::ClusterConfig.new(:requestfactory => requestfactory )
         it "Should return 'green'" do
-          expect(clusterhealth.healthstatus).to eq("green")
-        end
-      end
-      context "The requestfactory resturns a bad response" do
-        requestfactory = Eshealth::FakeRequest.new(:response => "something_stupid")
-        clusterhealth = Eshealth::ClusterHealth.new(:requestfactory => requestfactory )
-        it "Should raise error" do
-          expect{ clusterhealth.healthstatus }.to output("Unable to parse response from ES: 743: unexpected token at 'something_stupid'\n").to_stderr
+          expect(clusterconfig.healthstatus).to eq("green")
         end
       end
     end

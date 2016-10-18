@@ -5,7 +5,7 @@ module Eshealth
 
   class ClusterHealth < Checkfactory
 
-    attr_accessor :url, :healthbody, :type, :lastmsg 
+    attr_accessor :url, :type, :lastmsg 
     attr_reader :requestfactory
     
     def initialize(options={})
@@ -22,7 +22,6 @@ module Eshealth
     end
     
     def healthstatus
-      puts "running request\n"
       if response = self.requestfactory.fetch("_cluster/health")
         begin
           health = JSON.parse(response)
