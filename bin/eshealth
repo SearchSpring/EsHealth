@@ -31,15 +31,27 @@ OptionParser.new do |opts|
   opts.on("-k SERVICEKEY", "--key=SERVICEKEY", "PagerDuty service key") do |servicekey|
     options[:servicekey] = servicekey
   end
+  opts.on("-n CHECKNAME", "--check=CHECKNAME", "Name of check to perform\ndefault: clusterhealth\noptions: clusterhealth,clusterconfig,clusterfs") do |check|
+    options[:check] = check
+  end  
 end.parse!
 
+checkfactory = Eshealth::ClusterHealth.new(:url => options[:url])
+case options[:check]
+when "clusterhealth"
+  checkfactory = Eshealth::ClusterHealth.new(:url => options[:url])
+when "clusterconfig"
+  checkfactory = Eshealth::ClusterConfig.new(:url => options[:url])
+when "clusterfs"
+  checkfactory = Eshealth::ClusterFS.new(:url => options[:url])
+end
 
 checkloop = Eshealth::CheckLoop.new(
   :period         => options[:period],
   :failures       => options[:failures],
   :condition      => options[:condition],
   :quell          => options[:quell],
-  :checkfactory   => Eshealth::ClusterHealth.new(:url => options[:url]),
+  :checkfactory   => checkfactory,
   :alertfactory   => Eshealth::PagerDutyAlert.new(:servicekey => options[:servicekey])
 )
 
