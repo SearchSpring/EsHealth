@@ -1,12 +1,14 @@
+require "json"
+require "yaml"
 
 module Eshealth
-  class ClusterConfig < Checkfactory
+  class ClusterFS < Checkfactory
     
     attr_accessor :url, :configbody, :type, :lastmsg
     attr_reader :requestfactory
 
     def initialize(options={})
-      self.type = "ClusterConfig"
+      self.type = "ClusterFS"
       self.url = options[:url] || "http://localhost:9200"
       self.requestfactory = options[:requestfactory] || Eshealth::Requestfactory.build("HttpRequest",options)
     end
@@ -20,18 +22,23 @@ module Eshealth
 
     def healthstatus
       begin
-        response = self.requestfactory.fetch("_cat/nodes?h=node.role,master")
+        response = self.requestfactory.fetch("_nodes/stats/fs")
       rescue => e
         $stderr.puts "Unable to retrieve config: #{e}"
       end
-      response.split("\n").each do |line|
-        datanode, master = line.split(" ")
-        if datanode == "d" && master != "-"
-          self.lastmsg = "Data node is configured as possible master"
+      begin
+        fs = JSON.parse(response)
+      rescue => e
+        $stderr.puts "Unable to parse response: #{e}"
+      end
+      fs["nodes"].each do |node|
+        free = node[1]["fs"]["data"][0]["free_in_bytes"].to_f / node[1]["fs"]["data"][0]["total_in_bytes"].to_f
+        $stdout.puts "Free: #{(free * 100).to_i}%\n"
+        if free < 0.8
           return "red"
         end
       end
-      "green" 
+      "green"
     end
   end
 end
