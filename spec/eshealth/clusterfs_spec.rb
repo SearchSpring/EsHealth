@@ -3,32 +3,38 @@ require "json"
 
 describe Eshealth::ClusterFS do
   describe "Attributes" do
-    clusterhealth = Eshealth::ClusterFS.new
+    clusterfs = Eshealth::ClusterFS.new
     describe ".url" do
       it "Allows reading and writing for :url" do
-        clusterhealth.url = "something_stupid"
-        expect(clusterhealth.url).to eq("something_stupid")
+        clusterfs.url = "something_stupid"
+        expect(clusterfs.url).to eq("something_stupid")
       end
     end
     describe ".type" do
       it "Allows reading and writing for :type" do
-        clusterhealth.type = "something_stupid"
-        expect(clusterhealth.type).to eq("something_stupid")
+        clusterfs.type = "something_stupid"
+        expect(clusterfs.type).to eq("something_stupid")
       end
     end
     describe ".lastmsg" do
       it "Allows reading and writing for :lastmsg" do
-        clusterhealth.lastmsg = "something_stupid"
-        expect(clusterhealth.lastmsg).to eq("something_stupid")
+        clusterfs.lastmsg = "something_stupid"
+        expect(clusterfs.lastmsg).to eq("something_stupid")
       end
     end
     describe ".requestfactory" do
       it "Allows reading and writing for :requestfactory" do
-        clusterhealth.requestfactory = Eshealth::FakeRequest.new
-        expect(clusterhealth.requestfactory).to be_a(Eshealth::FakeRequest)
+        clusterfs.requestfactory = Eshealth::FakeRequest.new
+        expect(clusterfs.requestfactory).to be_a(Eshealth::FakeRequest)
       end
       it "And it must be a Eshealth::RequestFactory" do
-        expect { clusterhealth.requestfactory = "something_stupid" }.to raise_error("requestfactory must be a 'Eshealth::Requestfactory' not a Object")
+        expect { clusterfs.requestfactory = "something_stupid" }.to raise_error("requestfactory must be a 'Eshealth::Requestfactory' not a Object")
+      end
+    end
+    describe ".percentage" do
+      it "Allows reading and writing for :percentage" do
+        clusterfs.percentage = 15
+        expect(clusterfs.percentage).to eq(15)
       end
     end
   end
@@ -40,7 +46,7 @@ describe Eshealth::ClusterFS do
         node[1]["fs"]["data"][0]["total_in_bytes"] = 100
         nodes = {"nodes" => [node] }
         requestfactory = Eshealth::FakeRequest.new(:response => nodes.to_json)
-        clusterconfig = Eshealth::ClusterFS.new(:requestfactory => requestfactory )
+        clusterconfig = Eshealth::ClusterFS.new(:requestfactory => requestfactory, :percentage => 20 )
         it "Should return 'green'" do
           expect(clusterconfig.healthstatus).to eq("green")
         end
