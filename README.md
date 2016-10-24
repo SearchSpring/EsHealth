@@ -30,6 +30,8 @@ Usage: eshealth [OPTIONS]
     -c, --condition=STRING           String matching a successful healthcheck
     -q, --quell=N                    Amount of time to quell between alerts
     -k, --key=SERVICEKEY             PagerDuty service key
+    -n, --check=CHECKNAME            Name of check to perform, default: clusterhealth, options: clusterhealth,clusterconfig,clusterfs
+        --percentage                 Percentage to alert about when the check is a percentage based check (default 20)
 ```
 
 ### Docker

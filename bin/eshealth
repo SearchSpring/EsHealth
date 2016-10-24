@@ -32,7 +32,7 @@ OptionParser.new do |opts|
   opts.on("-k SERVICEKEY", "--key=SERVICEKEY", "PagerDuty service key") do |servicekey|
     options[:servicekey] = servicekey
   end
-  opts.on("-n CHECKNAME", "--check=CHECKNAME", "Name of check to perform\ndefault: clusterhealth\noptions: clusterhealth,clusterconfig,clusterfs") do |check|
+  opts.on("-n CHECKNAME", "--check=CHECKNAME", "Name of check to perform, default: clusterhealth, options: clusterhealth,clusterconfig,clusterfs") do |check|
     options[:check] = check
   end
   opts.on("--percentage", "Percentage to alert about when the check is a percentage based check (default 20).") do |percentage|
