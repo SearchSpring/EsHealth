@@ -32,9 +32,9 @@ module Eshealth
         $stderr.puts "Unable to parse response: #{e}"
       end
       fs["nodes"].each do |node|
-        free = node[1]["fs"]["data"][0]["free_in_bytes"].to_f / node[1]["fs"]["data"][0]["total_in_bytes"].to_f
+        free = node[1]["fs"]["data"][0]["free_in_bytes"].to_f / node[1]["fs"]["data"][0]["total_in_bytes"].to_f rescue 0
         $stdout.puts "Free: #{(free * 100).to_i}%\n"
-        if free < 0.8
+        if free < 0.2
           return "red"
         end
       end
