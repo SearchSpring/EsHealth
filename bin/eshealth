@@ -10,6 +10,7 @@ options[:url] = "http://localhost:9200"
 options[:period] = 5
 options[:failures] = 2
 options[:condition] = "green"
+options[:percentage] = 20
 
 OptionParser.new do |opts|
   opts.banner = "Usage: eshealth [OPTIONS]"
@@ -33,7 +34,10 @@ OptionParser.new do |opts|
   end
   opts.on("-n CHECKNAME", "--check=CHECKNAME", "Name of check to perform\ndefault: clusterhealth\noptions: clusterhealth,clusterconfig,clusterfs") do |check|
     options[:check] = check
-  end  
+  end
+  opts.on("--percentage", "Percentage to alert about when the check is a percentage based check (default 20).") do |percentage|
+    options[:percentage] = percentage
+  end
 end.parse!
 
 checkfactory = Eshealth::ClusterHealth.new(:url => options[:url])
@@ -43,7 +47,7 @@ when "clusterhealth"
 when "clusterconfig"
   checkfactory = Eshealth::ClusterConfig.new(:url => options[:url])
 when "clusterfs"
-  checkfactory = Eshealth::ClusterFS.new(:url => options[:url])
+  checkfactory = Eshealth::ClusterFS.new(:url => options[:url], :percentage => options[:percentage])
 end
 
 checkloop = Eshealth::CheckLoop.new(
