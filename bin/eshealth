@@ -38,6 +38,25 @@ OptionParser.new do |opts|
   opts.on("--percentage", "Percentage to alert about when the check is a percentage based check (default 20).") do |percentage|
     options[:percentage] = percentage
   end
+  opts.on("--alertmethod", "The method to alert default: pagerduty, options: email, pagerduty") do |alertfactory|
+    options[:alertfactory] = alertfactory
+  end
+  opts.on("--from_email", "Email to send alerts from if using email alerts") do |from_email|
+    options[:from_email] = from_email
+  end
+  opts.on("--to_email", "Email to send alerts to if using email alerts") do |to_email|
+    options[:to_email] = to_email
+  end
+  opts.on("--smtp", "SMTP server to send email through if using email alerts (default 'localhost')") do |smtp|
+    options[:smtp] = smtp
+  end
+  opts.on("--user", "Username if needed for notification method") do |user|
+    options[:user] = user
+  end
+  opts.on("--password", "Password if needed for notification method") do |password|
+    options[:password] = password
+  end
+  opts.on("--logintype", "Login type if needed for notification method default: login, options: plain, login, cram_md5 ")
 end.parse!
 
 checkfactory = Eshealth::ClusterHealth.new(:url => options[:url])
@@ -49,6 +68,23 @@ when "clusterconfig"
 when "clusterfs"
   checkfactory = Eshealth::ClusterFS.new(:url => options[:url], :percentage => options[:percentage])
 end
+
+alertfactory = Eshealth::PagerDuty.new(:servicekey => options[:servicekey])
+case options[:alertfactory]
+when "pagerduty"
+  alertfactory = Eshealth::PagerDuty.new(:servicekey => options[:servicekey])
+when "email"
+  alertfactory = Eshealth::PagerDuty.new(
+    :from_email => options[:from_email], 
+    :to_email   => options[:to_email],
+    :smtp       => options[:smtp],
+    :port       => options[:port],
+    :username   => options[:username],
+    :password   => options[:password],
+    :logintype  => options[:logintype]
+  )
+end
+
 
 checkloop = Eshealth::CheckLoop.new(
   :period         => options[:period],
