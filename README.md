@@ -31,7 +31,15 @@ Usage: eshealth [OPTIONS]
     -q, --quell=N                    Amount of time to quell between alerts
     -k, --key=SERVICEKEY             PagerDuty service key
     -n, --check=CHECKNAME            Name of check to perform, default: clusterhealth, options: clusterhealth,clusterconfig,clusterfs
-        --percentage                 Percentage to alert about when the check is a percentage based check (default 20)
+        --percentage                 Percentage to alert about when the check is a percentage based check (default 20).
+        --alertmethod                The method to alert default: pagerduty, options: email, pagerduty
+        --from_email                 Email to send alerts from if using email alerts
+        --to_email                   Email to send alerts to if using email alerts
+        --smtp                       SMTP server to send email through if using email alerts (default 'localhost')
+        --user                       Username if needed for notification method
+        --password                   Password if needed for notification method
+        --logintype                  Login type if needed for notification method default: login, options: plain, login, cram_md5
+        
 ```
 
 ### Docker
