@@ -7,5 +7,6 @@ gem "pagerduty"
 
 group :test do
   gem 'webmock'
+  gem 'mailcrate'
 end
 

@@ -1,4 +1,4 @@
-require 'Net::SMTP'
+require 'net/smtp'
 
 module Eshealth
   class Emailalert < Alertfactory
@@ -12,21 +12,21 @@ module Eshealth
       self.port = options[:port] || 25
       self.user = options[:user]
       self.password = options[:password]
-      self.logintype = options[:logintype]
+      self.logintype = options[:logintype] || "login"
     end
 
     def from_email=(from_email)
-      raise "Not a proper email address" unless @emailregex.match(self.from_email)
+      raise "Not a proper email address : '#{from_email}'" unless @emailregex.match(from_email)
       @from_email = from_email
     end
 
     def to_email=(to_email)
-      raise "Not a proper email address" unless @emailregex.match(self.from_email)
+      raise "Not a proper email address : '#{to_email}'" unless @emailregex.match(to_email)
       @to_email = to_email
     end
 
     def port=(port)
-      raise "'port' must be an INT" unless self.port.type == INT
+      raise "'port' must be an INT" unless port.is_a? Integer
       @port = port
     end
 
@@ -45,15 +45,25 @@ module Eshealth
       email(msg)
     end
 
-    def email(options={})
-      msg = options[:msg]
-      smtp = Net::SMTP.start(
-        self.smtp, 
-        self.port, 
-        self.user, 
-        self.password, 
-        self.logintype
-      )
+    private
+
+    def email(msg)
+      msg = msg
+      if self.user
+        smtp = Net::SMTP.start(
+          self.smtp, 
+          self.port, 
+          self.user, 
+          self.password, 
+          self.logintype
+        )
+      else
+          smtp = Net::SMTP.start(
+            self.smtp, 
+            self.port
+          )
+      end
+
       smtp.send_message msg, self.from_email, self.to_email
       begin
         smtp.finish
