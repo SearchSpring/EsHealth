@@ -69,12 +69,12 @@ when "clusterfs"
   checkfactory = Eshealth::ClusterFS.new(:url => options[:url], :percentage => options[:percentage])
 end
 
-alertfactory = Eshealth::PagerDuty.new(:servicekey => options[:servicekey])
+alertfactory = Eshealth::PagerDutyAlert.new(:servicekey => options[:servicekey])
 case options[:alertfactory]
 when "pagerduty"
-  alertfactory = Eshealth::PagerDuty.new(:servicekey => options[:servicekey])
+  alertfactory = Eshealth::PagerDutyAlert.new(:servicekey => options[:servicekey])
 when "email"
-  alertfactory = Eshealth::PagerDuty.new(
+  alertfactory = Eshealth::Emailalert.new(
     :from_email => options[:from_email], 
     :to_email   => options[:to_email],
     :smtp       => options[:smtp],
