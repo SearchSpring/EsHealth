@@ -4,7 +4,7 @@ module Eshealth
 
   # This class contains the main loop of the application
   class CheckLoop
-    
+
     attr_accessor :period, :failures, :condition, :checks, :quell, :quellcount, :incidentids
     attr_reader :checkfactory, :alertfactory
     def initialize(options={})
@@ -46,12 +46,17 @@ module Eshealth
     def check_health
       puts "Running check\n"
       # Log the current health condition
-      self.checks << self.checkfactory.healthstatus
+      begin
+        self.checks << self.checkfactory.healthstatus
+      rescue => e
+        $stderr.puts "Unable to complete check, marking red: #{e}"
+        self.checks << "red"
+      end
 
       if ! status_good?
         if self.quellcount > self.quell || self.quellcount == 0
           # Alert if it's not time to quell an alert
-          alert  
+          alert
         else
           puts "Check failed! Quelling #{self.quell - self.quellcount + self.period} minutes.\n"
           self.quellcount += self.period
@@ -75,17 +80,17 @@ module Eshealth
     def alert
       puts "Check failed! Alerting.\n"
       incidentid = self.alertfactory.trigger(
-        :source => self.checkfactory.type, 
+        :source => self.checkfactory.type,
         :msg => self.checkfactory.lastmsg
       )
       self.incidentids << incidentid if incidentid
       self.quellcount = self.period
     end
-    
+
     def clear
       self.alertfactory.clear(
-        :source => self.checkfactory.type, 
-        :msg => self.checkfactory.lastmsg, 
+        :source => self.checkfactory.type,
+        :msg => self.checkfactory.lastmsg,
         :incidentids => self.incidentids
       )
       self.quellcount = 0
