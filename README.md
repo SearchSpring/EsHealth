@@ -25,10 +25,10 @@ Or install it yourself as:
 ```
 Usage: eshealth [OPTIONS]
     -u, --url=http://your_url:9200   URL to ES server
-    -p, --period=N                   Number of minutes between checks
+    -p, --period=N                   Number of seconds between checks
     -f, --failures=N                 Number of consecutive failures to trigger an alert
     -c, --condition=STRING           String matching a successful healthcheck
-    -q, --quell=N                    Amount of time to quell between alerts
+    -q, --quell=N                    Number of minutes to quell between alerts
     -k, --key=SERVICEKEY             PagerDuty service key
     -n, --check=CHECKNAME            Name of check to perform, default: clusterhealth, options: clusterhealth,clusterconfig,clusterfs
         --percentage                 Percentage to alert about when the check is a percentage based check (default 20).
@@ -39,7 +39,7 @@ Usage: eshealth [OPTIONS]
         --user                       Username if needed for notification method
         --password                   Password if needed for notification method
         --logintype                  Login type if needed for notification method default: login, options: plain, login, cram_md5
-        
+
 ```
 
 ### Docker
