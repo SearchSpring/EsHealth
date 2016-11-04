@@ -1,6 +1,6 @@
 FROM ruby:2.1.10-alpine
 
-RUN apk add --no-cache \ 
+RUN apk add --no-cache \
       bash \
       git \
       make \
