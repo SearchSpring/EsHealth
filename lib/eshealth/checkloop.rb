@@ -38,8 +38,8 @@ module Eshealth
       puts "Starting loop\n"
       loop do
         check_health
-        puts "Sleeping for #{self.period} minutes\n"
-        sleep(self.period*60)
+        puts "Sleeping for #{self.period} seconds\n"
+        sleep(self.period)
       end
     end
 
