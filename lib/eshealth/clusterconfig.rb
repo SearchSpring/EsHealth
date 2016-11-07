@@ -26,7 +26,7 @@ module Eshealth
       end
       response.split("\n").each do |line|
         datanode, master = line.split(" ")
-        if datanode == "d" && master != "-"
+        if /.*d.*/.match(datanode)  && master != "-"
           self.lastmsg = "Data node is configured as possible master"
           return "red"
         end

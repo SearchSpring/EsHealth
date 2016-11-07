@@ -8,6 +8,7 @@ module Eshealth
     attr_accessor :period, :failures, :condition, :checks, :quell, :quellcount, :incidentids
     attr_reader :checkfactory, :alertfactory
     def initialize(options={})
+      $stdout.sync = true
       self.period = options[:period] || 3
       self.failures = options[:failures] || 3
       self.condition = options[:condition] || "green"
