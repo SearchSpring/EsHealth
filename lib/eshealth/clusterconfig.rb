@@ -24,8 +24,8 @@ module Eshealth
       rescue => e
         $stderr.puts "Unable to retrieve config: #{e}"
       end
-      response.split(/\s+/).each do |line|
-        datanode, master = line.split(" ")
+      response.split("\n").each do |line|
+        datanode, master = line.split(/\s+/)
         if /.*d.*/.match(datanode) && master != "-"
           self.lastmsg = "Data node is configured as possible master"
           return "red"
