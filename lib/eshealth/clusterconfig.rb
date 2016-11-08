@@ -1,7 +1,7 @@
 
 module Eshealth
   class ClusterConfig < Checkfactory
-    
+
     attr_accessor :url, :configbody, :type, :lastmsg
     attr_reader :requestfactory
 
@@ -20,7 +20,7 @@ module Eshealth
 
     def healthstatus
       begin
-        response = self.requestfactory.fetch("_cat/nodes?h=node.role,master")
+        response = self.requestfactory.fetch("_cat/nodes", {:h => "node.role,master"})
       rescue => e
         $stderr.puts "Unable to retrieve config: #{e}"
       end
@@ -31,7 +31,7 @@ module Eshealth
           return "red"
         end
       end
-      "green" 
+      "green"
     end
   end
 end
