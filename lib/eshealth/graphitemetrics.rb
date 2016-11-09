@@ -4,22 +4,19 @@ require "json"
 module Eshealth
   class GraphiteMetrics < Alertfactory
 
-    attr_accessor :host, :port, :prefix
+    attr_accessor :host, :port 
 
     def initialize(options={})
       self.host = options[:host] || "localhost"
       self.port = options[:port] || 2003
-      self.prefix = options[:prefix] || "eshealth"
     end
 
     def trigger(options={})
-      g = Graphite.new({:host => self.host, :port => self.port, :prefix => self.prefix})
+      g = Graphite.new({:host => self.host, :port => self.port})
       begin
         g.push_to_graphite do | graphite |
-          options[:msg].split("\n").each do |line|
-            graphite.puts line
-            puts "#{self.prefix}.#{line}\n"
-          end
+          graphite.puts options[:msg]
+          puts options[:msg]
         end
       rescue => e
         $stderr.puts "Unable to contact Graphite: #{e}"

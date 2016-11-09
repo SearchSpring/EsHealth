@@ -6,13 +6,14 @@ require "pp"
 module Eshealth
   class Metrics < Checkfactory
     
-    attr_accessor :url, :type, :metrics, :lastmsg
+    attr_accessor :url, :type, :metrics, :prefix, :lastmsg
     attr_reader :requestfactory
 
     def initialize(options={})
       self.type = "metricHeap"
       self.url = options[:url] || "http://localhost:9200"
       self.metrics = options[:metrics]
+      self.prefix = options[:prefix]
       self.requestfactory = options[:requestfactory] || Eshealth::Requestfactory.build("HttpRequest",options)
     end
 
@@ -37,10 +38,10 @@ module Eshealth
       end
       msg = ""
       nodes["nodes"].each do |node|
-        self.metrics.each do |metric|
-            metric_string = node[1].dig(metric)
-            name = node[1].dig("name")
-            msg += "#{name}.#{metric_string} #{Time.now.to_i}\n"
+        self.metrics.each do |metric_name|
+            metric_value = node[1].dig(metric_name)
+            name = node[1].dig("name").downcase
+            msg += "#{self.prefix}.#{name}.#{metric_name} #{metric_value} #{Time.now.to_i}\n"
         end
       end
       self.lastmsg = msg
