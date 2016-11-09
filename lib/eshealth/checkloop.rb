@@ -79,7 +79,11 @@ module Eshealth
     end
 
     def alert
-      puts "Check failed! Alerting.\n"
+      if self.checkfactory.class == Eshealth::Metrics
+        puts "Sending metrics.\n"
+      else
+        puts "Check failed! Alerting.\n"
+      end
       incidentid = self.alertfactory.trigger(
         :source => self.checkfactory.type,
         :msg => self.checkfactory.lastmsg

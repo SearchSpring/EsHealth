@@ -11,6 +11,8 @@ options[:period] = 5
 options[:failures] = 2
 options[:condition] = "green"
 options[:percentage] = 20
+options[:host] = "localhost"
+options[:port] = 80
 
 OptionParser.new do |opts|
   opts.banner = "Usage: eshealth [OPTIONS]"
@@ -32,31 +34,42 @@ OptionParser.new do |opts|
   opts.on("-k SERVICEKEY", "--key=SERVICEKEY", "PagerDuty service key") do |servicekey|
     options[:servicekey] = servicekey
   end
-  opts.on("-n CHECKNAME", "--check=CHECKNAME", "Name of check to perform, default: clusterhealth, options: clusterhealth,clusterconfig,clusterfs") do |check|
+  opts.on("-n CHECKNAME", "--check=CHECKNAME", "Name of check to perform, default: clusterhealth, options: clusterhealth,clusterconfig,clusterfs,metrics") do |check|
     options[:check] = check
   end
   opts.on("--percentage", "Percentage to alert about when the check is a percentage based check (default 20).") do |percentage|
     options[:percentage] = percentage
   end
-  opts.on("--alertmethod", "The method to alert default: pagerduty, options: email, pagerduty") do |alertfactory|
+  opts.on("--alertmethod METHOD", "The method to alert default: pagerduty, options: email, pagerduty, graphite") do |alertfactory|
     options[:alertfactory] = alertfactory
   end
-  opts.on("--from_email", "Email to send alerts from if using email alerts") do |from_email|
+  opts.on("--from_email FROM_EMAIL", "Email to send alerts from if using email alerts") do |from_email|
     options[:from_email] = from_email
   end
-  opts.on("--to_email", "Email to send alerts to if using email alerts") do |to_email|
+  opts.on("--to_email TO_EMAIL", "Email to send alerts to if using email alerts") do |to_email|
     options[:to_email] = to_email
   end
-  opts.on("--smtp", "SMTP server to send email through if using email alerts (default 'localhost')") do |smtp|
+  opts.on("--smtp SMTP_SERVER", "SMTP server to send email through if using email alerts (default 'localhost')") do |smtp|
     options[:smtp] = smtp
   end
-  opts.on("--user", "Username if needed for notification method") do |user|
+  opts.on("--user USERNAME", "Username if needed for notification method") do |user|
     options[:user] = user
   end
-  opts.on("--password", "Password if needed for notification method") do |password|
+  opts.on("--password PASSWORD", "Password if needed for notification method") do |password|
     options[:password] = password
   end
-  opts.on("--logintype", "Login type if needed for notification method default: login, options: plain, login, cram_md5 ")
+  opts.on("--logintype LOGINTYPE", "Login type if needed for notification method default: login, options: plain, login, cram_md5 ") do |logintype|
+    options[:logintype] = logintype
+  end
+  opts.on("--metrics 1metric,2metric,3metric", Array, "List of metrics you want pulled from ES") do |metrics|
+    options[:metrics] = metrics
+  end
+  opts.on("--host HOSTNAME", "For alert methods that require a hostname") do |host|
+    options[:host] = host
+  end
+  opts.on("--port PORT", "For alert methods that require a port") do |port|
+    options[:port] = port
+  end
 end.parse!
 
 checkfactory = Eshealth::ClusterHealth.new(:url => options[:url])
@@ -67,6 +80,8 @@ when "clusterconfig"
   checkfactory = Eshealth::ClusterConfig.new(:url => options[:url])
 when "clusterfs"
   checkfactory = Eshealth::ClusterFS.new(:url => options[:url], :percentage => options[:percentage])
+when "metrics"
+  checkfactory = Eshealth::Metrics.new(:url => options[:url], :metrics => options[:metrics])
 end
 
 alertfactory = Eshealth::PagerDutyAlert.new(:servicekey => options[:servicekey])
@@ -83,8 +98,11 @@ when "email"
     :password   => options[:password],
     :logintype  => options[:logintype]
   )
+when "graphite"
+  alertfactory = Eshealth::GraphiteMetrics.new(:host => options[:host], :port => options[:port], :prefix => "eshealth")
+  options[:failures] = 1
+  options[:quell] = 1
 end
-
 
 checkloop = Eshealth::CheckLoop.new(
   :period         => options[:period],
@@ -92,7 +110,7 @@ checkloop = Eshealth::CheckLoop.new(
   :condition      => options[:condition],
   :quell          => options[:quell],
   :checkfactory   => checkfactory,
-  :alertfactory   => Eshealth::PagerDutyAlert.new(:servicekey => options[:servicekey])
+  :alertfactory   => alertfactory
 )
 
 checkloop.start

@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gemspec
 gem "revolver"
 gem "pagerduty"
+gem "simple-graphite"
 
 group :test do
   gem 'webmock'
