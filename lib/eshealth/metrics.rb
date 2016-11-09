@@ -46,7 +46,6 @@ module Eshealth
       msg = ""
       nodes["nodes"].each do |node|
         self.metrics.each do |metric_name|
-            metric = ""
             begin 
               metric_value = node[1].dig(metric_name)
             rescue => e
