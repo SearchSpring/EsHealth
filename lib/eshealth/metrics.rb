@@ -48,7 +48,7 @@ module Eshealth
         self.metrics.each do |metric_name|
             metric_value = ""
             begin 
-              node[1].dig(metric_name)
+              metric_value = node[1].dig(metric_name)
             rescue => e
               $stderr.puts "Unable to retrive metric : #{metric_name}\n"
               next
