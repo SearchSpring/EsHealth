@@ -28,17 +28,22 @@ Usage: eshealth [OPTIONS]
     -p, --period=N                   Number of seconds between checks
     -f, --failures=N                 Number of consecutive failures to trigger an alert
     -c, --condition=STRING           String matching a successful healthcheck
-    -q, --quell=N                    Number of minutes to quell between alerts
+    -q, --quell=N                    Amount of time to quell between alerts
     -k, --key=SERVICEKEY             PagerDuty service key
-    -n, --check=CHECKNAME            Name of check to perform, default: clusterhealth, options: clusterhealth,clusterconfig,clusterfs
+    -n, --check=CHECKNAME            Name of check to perform, default: clusterhealth, options: clusterhealth,clusterconfig,clusterfs,metrics
         --percentage                 Percentage to alert about when the check is a percentage based check (default 20).
-        --alertmethod                The method to alert default: pagerduty, options: email, pagerduty
-        --from_email                 Email to send alerts from if using email alerts
-        --to_email                   Email to send alerts to if using email alerts
-        --smtp                       SMTP server to send email through if using email alerts (default 'localhost')
-        --user                       Username if needed for notification method
-        --password                   Password if needed for notification method
-        --logintype                  Login type if needed for notification method default: login, options: plain, login, cram_md5
+        --alertmethod METHOD         The method to alert default: pagerduty, options: email, pagerduty, graphite
+        --from_email FROM_EMAIL      Email to send alerts from if using email alerts
+        --to_email TO_EMAIL          Email to send alerts to if using email alerts
+        --smtp SMTP_SERVER           SMTP server to send email through if using email alerts (default 'localhost')
+        --user USERNAME              Username if needed for notification method
+        --password PASSWORD          Password if needed for notification method
+        --logintype LOGINTYPE        Login type if needed for notification method default: login, options: plain, login, cram_md5 
+        --metrics 1metric,2metric,3metric
+                                     List of metrics you want pulled from ES
+        --host HOSTNAME              For alert methods that require a hostname
+        --port PORT                  For alert methods that require a port
+        --prefix PREFIX              For metrics, prefix to prepend to graphites stats
 
 ```
 
