@@ -46,7 +46,13 @@ module Eshealth
       msg = ""
       nodes["nodes"].each do |node|
         self.metrics.each do |metric_name|
-            metric_value = node[1].dig(metric_name)
+            metric_value = ""
+            begin 
+              node[1].dig(metric_name)
+            rescue => e
+              $stderr.puts "Unable to retrive metric : #{metric_name}\n"
+              next
+            end
             name = node[1].dig("name").downcase
             msg += "#{self.prefix}.#{name}.#{metric_name} #{metric_value} #{Time.now.to_i}\n"
         end
