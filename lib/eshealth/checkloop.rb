@@ -9,7 +9,7 @@ module Eshealth
     attr_reader :checkfactory, :alertfactory
     def initialize(options={})
       $stdout.sync = true
-      self.period = options[:period] || 3
+      self.period = options[:period] || 60
       self.failures = options[:failures] || 3
       self.condition = options[:condition] || "green"
       self.quell = options[:quell] || 30

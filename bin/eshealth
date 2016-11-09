@@ -7,7 +7,7 @@ require 'pp'
 
 options = OpenStruct.new()
 options[:url] = "http://localhost:9200"
-options[:period] = 5
+options[:period] = 60
 options[:failures] = 2
 options[:condition] = "green"
 options[:percentage] = 20
@@ -20,7 +20,7 @@ OptionParser.new do |opts|
   opts.on("-u http://your_url:9200", "--url=http://your_url:9200", "URL to ES server") do |url|
     options[:url] = url
   end
-  opts.on("-p N", "--period=N", "Number of minutes between checks") do |period|
+  opts.on("-p N", "--period=N", "Number of seconds between checks") do |period|
     options[:period] = period.to_i
   end
   opts.on("-f N", "--failures=N", "Number of consecutive failures to trigger an alert") do |failures|

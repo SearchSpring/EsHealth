@@ -1,5 +1,4 @@
 require "simple-graphite"
-require "json"
 
 module Eshealth
   class GraphiteMetrics < Alertfactory
@@ -21,7 +20,6 @@ module Eshealth
       rescue => e
         $stderr.puts "Unable to contact Graphite: #{e}"
       end
-    
     end
     
     def clear(options={})
