@@ -9,7 +9,7 @@ module Eshealth
     attr_reader :checkfactory, :alertfactory
     def initialize(options={})
       $stdout.sync = true
-      self.period = options[:period] || 3
+      self.period = options[:period] || 60
       self.failures = options[:failures] || 3
       self.condition = options[:condition] || "green"
       self.quell = options[:quell] || 30
@@ -79,7 +79,11 @@ module Eshealth
     end
 
     def alert
-      puts "Check failed! Alerting.\n"
+      if self.checkfactory.class == Eshealth::Metrics
+        puts "Sending metrics.\n"
+      else
+        puts "Check failed! Alerting.\n"
+      end
       incidentid = self.alertfactory.trigger(
         :source => self.checkfactory.type,
         :msg => self.checkfactory.lastmsg
